@@ -11,7 +11,6 @@ int sum = 0;
 
 void init_found_prods()
 {
-	fp.prods[0] = -1;
 	fp.num = 0;
 }
 
@@ -52,18 +51,28 @@ int prod_valid(int prod)
 	int i;
 	int prod_digits[4];
 
-	for (i = 5; i < 9; i++)
-		prod_digits[i] = digits[i];
+	for (i = 0; i < 4; i++)
+		prod_digits[i] = digits[i+5];
 
 	while (prod > 0) {
 		digit = prod%10;
 		prod /= 10;
-		for (i = 5; i < 9; i++)
-			if (digit == digits[i])
+		for (i = 0; i < 4; i++)
+			if (digit == prod_digits[i]) {
+				prod_digits[i] = -1;
 				break;
+			}
+		if (i == 4)
+			return 0;
+	}
+
+	return 1;
+}
+
 void calculate_prod()
 {
 	int i;
+	int prod;
 
 	for (i = 1; i < 5; i++) {
 		prod = to_num(0, i)*to_num(i, 5);
@@ -78,6 +87,7 @@ void calculate_prod()
 void permute(int start)
 {
 	int i;
+	int tmp;
 
 	if (start == 5) {
 		calculate_prod();
@@ -95,4 +105,14 @@ void permute(int start)
 	for (i = start; i < 8; i++)
 		digits[i] = digits[i+1];
 	digits[i] = tmp;
+}
+
+int main()
+{
+	init_found_prods();
+	permute(0);
+
+	printf("Result: %d\n", sum);
+
+	return 0;
 }
